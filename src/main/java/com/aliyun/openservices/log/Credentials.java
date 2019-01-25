@@ -56,8 +56,9 @@ public class Credentials {
     }
 
     public boolean refreshCredentialsIfNeeded() {
-        if (credentialsProvider == null)
+        if (credentialsProvider == null) {
             return false;
+        }
         try {
             AlibabaCloudCredentials creds = credentialsProvider.getCredentials();
             String newAkId = creds.getAccessKeyId();

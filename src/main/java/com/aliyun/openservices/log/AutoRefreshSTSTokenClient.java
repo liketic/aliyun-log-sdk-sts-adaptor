@@ -1,6 +1,7 @@
 package com.aliyun.openservices.log;
 
 
+import com.aliyun.openservices.log.common.Consts;
 import com.aliyun.openservices.log.exception.LogException;
 import com.aliyun.openservices.log.http.client.HttpMethod;
 import com.aliyun.openservices.log.http.comm.ResponseMessage;
@@ -26,17 +27,16 @@ public class AutoRefreshSTSTokenClient extends Client {
                                        Map<String, String> headers,
                                        byte[] body, Map<String, String> output_header,
                                        String serverIp) throws LogException {
-        try {
-            return super.SendData(project, method, resourceUri, parameters, headers, body, output_header, serverIp);
-        } finally {
-            // The refreshed token can be used in next request since the security token
-            // is send to server as a header which cannot be hooked.
-            if (credentials.refreshCredentialsIfNeeded()) {
-                setAccessId(credentials.getAccessKeyId());
-                setAccessKey(credentials.getAccessKeySecret());
-                setSecurityToken(credentials.getSecurityToken());
-                System.out.println("Credentials has been refreshed successfully");
+        if (credentials.refreshCredentialsIfNeeded()) {
+            setAccessId(credentials.getAccessKeyId());
+            setAccessKey(credentials.getAccessKeySecret());
+            final String securityToken = credentials.getSecurityToken();
+            setSecurityToken(securityToken);
+            if (securityToken != null && !securityToken.isEmpty()) {
+                headers.put(Consts.CONST_X_ACS_SECURITY_TOKEN, credentials.getSecurityToken());
             }
+            System.out.println("Credentials has been refreshed successfully");
         }
+        return super.SendData(project, method, resourceUri, parameters, headers, body, output_header, serverIp);
     }
 }
