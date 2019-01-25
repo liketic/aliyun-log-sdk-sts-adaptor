@@ -30,10 +30,10 @@ public class AutoRefreshSTSTokenClientTest {
         System.out.println(credentials.getAccessKeySecret());
         System.out.println(credentials.getSecurityToken());
 
-        AutoRefreshSTSTokenClient client = new AutoRefreshSTSTokenClient(
-                slsEndpoint, credentials);
+        AutoRefreshSTSTokenClient client = new AutoRefreshSTSTokenClient(slsEndpoint, credentials);
         for (int i = 0; i < 1000; i++) {
             // do anything with client
+            System.out.println(System.currentTimeMillis() / 1000);
             client.updateProject(new UpdateProjectRequest("xxxx", "xx-new"));
             try {
                 System.out.println("Awaiting next call...");

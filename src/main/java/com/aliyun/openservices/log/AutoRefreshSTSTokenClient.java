@@ -26,11 +26,17 @@ public class AutoRefreshSTSTokenClient extends Client {
                                        Map<String, String> headers,
                                        byte[] body, Map<String, String> output_header,
                                        String serverIp) throws LogException {
-        if (credentials.refreshCredentialsIfNeeded()) {
-            setAccessId(credentials.getAccessKeyId());
-            setAccessKey(credentials.getAccessKeySecret());
-            setSecurityToken(credentials.getSecurityToken());
+        try {
+            return super.SendData(project, method, resourceUri, parameters, headers, body, output_header, serverIp);
+        } finally {
+            // The refreshed token can be used in next request since the security token
+            // is send to server as a header which cannot be hooked.
+            if (credentials.refreshCredentialsIfNeeded()) {
+                setAccessId(credentials.getAccessKeyId());
+                setAccessKey(credentials.getAccessKeySecret());
+                setSecurityToken(credentials.getSecurityToken());
+                System.out.println("Credentials has been refreshed successfully");
+            }
         }
-        return super.SendData(project, method, resourceUri, parameters, headers, body, output_header, serverIp);
     }
 }
