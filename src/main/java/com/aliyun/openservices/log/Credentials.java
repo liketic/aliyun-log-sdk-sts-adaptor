@@ -52,7 +52,7 @@ public class Credentials {
     }
 
     private static boolean isSame(String a, String b) {
-        return (a == null && b == null) || (a != null && a.equals(b));
+        return a == null ? b == null : a.equals(b);
     }
 
     public boolean refreshCredentialsIfNeeded() {
