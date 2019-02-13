@@ -1,4 +1,4 @@
 # aliyun-log-sdk-sts-adaptor
 
 
-Refresh STS token if necessary when every request finished.
+A wrapper of aliyun-log-java-sdk for auto refresh STS token.
